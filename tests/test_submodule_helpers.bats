@@ -87,3 +87,35 @@ teardown() {
     run is_valid_submodule ""
     [ "$status" -eq 1 ]
 }
+
+@test "private/submodule_helpers.sh: Test is_detached_head function" {
+    # Change to the main repo directory
+    # Create a new directory for this specific test
+    mkdir -p "$TEST_TEMP_DIR/detached_head_test"
+    cd "$TEST_TEMP_DIR/detached_head_test"
+    
+    # Initialize a new git repository for this test
+    git-test init
+    # Create and commit a dummy file to have an initial commit
+    touch dummy.txt
+    git-test add dummy.txt
+    git-test commit -m "Initial commit"
+    
+    # Test when not in detached HEAD state
+    run is_detached_head
+    [ "$status" -eq 1 ]
+    
+    # Create a detached HEAD state
+    git-test checkout --detach HEAD
+    
+    # Test when in detached HEAD state
+    run is_detached_head
+    [ "$status" -eq 0 ]
+    
+    # Return to a branch (e.g., main)
+    git-test checkout main
+    
+    # Verify we're back to non-detached state
+    run is_detached_head
+    [ "$status" -eq 1 ]
+}

@@ -11,10 +11,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
-    - name: Install bats
-      run: sudo apt-get install -y bats
+    - name: Set up Bats (v1.11.0)
+      run: |
+        git clone --depth 1 --branch v1.11.0 https://github.com/bats-core/bats-core.git
+        cd bats-core
+        sudo ./install.sh /usr/local
+
+    - name: Check Bats version
+      run: bats --version
+
+    - name: Configure Git
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git config --global init.defaultBranch main
 
     - name: Run tests
       run: bats tests

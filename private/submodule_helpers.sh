@@ -13,6 +13,24 @@ list_submodules() {
     echo "$submodules_output"
 }
 
+# Function to check if the current branch is in detached HEAD state
+# Returns 0 if in detached HEAD state, 1 otherwise
+# Usage:
+# if is_detached_head; then
+#     echo "The repository is in detached HEAD state"
+# else
+#     echo "The repository is not in detached HEAD state"
+# fi
+is_detached_head() {
+    if git symbolic-ref -q HEAD >/dev/null 2>&1; then
+        return 1  # Not in detached HEAD state
+    else
+        return 0  # In detached HEAD state
+    fi
+}
+
+
+
 # Function to list available submodules from the .gitmodules file
 list_submodules_tracking_branch() {
     local submodules_output
